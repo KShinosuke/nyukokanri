@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>申請の承認</title>
+</head>
+<body>
+    <h1>申請の詳細</h1>
+    <p>氏名: John Doe</p>
+    <p>入構目的: イベント参加</p>
+    <p>希望日時: 2024-06-02 10:00</p>
+
+    <form id="approvalForm">
+        <input type="hidden" id="applicationId" name="applicationId" value="123">
+        <button type="submit" name="action" value="approve">承認</button>
+        <button type="submit" name="action" value="reject">却下</button>
+    </form>
+
+    <script src="approval.js"></script>
+</body>
+</html>
