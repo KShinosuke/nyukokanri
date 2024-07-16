@@ -13,23 +13,35 @@
     <h1>写真を撮影して結果を表示する</h1>
     <video id="video" width="320" height="240" autoplay playsinline></video>
     <button id="snap">写真を撮る</button>
+    <button id="switch-camera">カメラを切り替える</button>
     <a id="download" style="display:none;">写真をダウンロード</a>
     <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
     <script>
+        let useFrontCamera = true;
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const context = canvas.getContext('2d');
         const snap = document.getElementById('snap');
+        const switchCamera = document.getElementById('switch-camera');
         const download = document.getElementById('download');
 
-        // カメラへのアクセスをリクエスト
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-            .then((stream) => {
-                video.srcObject = stream;
-            })
-            .catch((err) => {
-                console.error("エラー:", err);
-            });
+        function startCamera() {
+            const constraints = {
+                video: {
+                    facingMode: useFrontCamera ? 'user' : 'environment'
+                }
+            };
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then((stream) => {
+                    video.srcObject = stream;
+                })
+                .catch((err) => {
+                    console.error("エラー:", err);
+                });
+        }
+
+        // 初期カメラの開始
+        startCamera();
 
         // 写真を撮影してキャンバスに描画
         snap.addEventListener('click', () => {
@@ -42,6 +54,12 @@
             download.download = 'photo.jpg';
             download.style.display = 'block';
             download.textContent = '写真をダウンロード';
+        });
+
+        // カメラを切り替える
+        switchCamera.addEventListener('click', () => {
+            useFrontCamera = !useFrontCamera;
+            startCamera();
         });
     </script>
 </body>
