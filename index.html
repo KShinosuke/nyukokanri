@@ -2,10 +2,16 @@
 <html>
 <head>
     <title>写真撮影と結果表示</title>
+    <style>
+        video, canvas {
+            width: 100%;
+            max-width: 320px;
+        }
+    </style>
 </head>
 <body>
     <h1>写真を撮影して結果を表示する</h1>
-    <video id="video" width="320" height="240" autoplay></video>
+    <video id="video" width="320" height="240" autoplay playsinline></video>
     <button id="snap">写真を撮る</button>
     <a id="download" style="display:none;">写真をダウンロード</a>
     <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
@@ -17,7 +23,7 @@
         const download = document.getElementById('download');
 
         // カメラへのアクセスをリクエスト
-        navigator.mediaDevices.getUserMedia({ video: true })
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
             .then((stream) => {
                 video.srcObject = stream;
             })
@@ -27,7 +33,8 @@
 
         // 写真を撮影してキャンバスに描画
         snap.addEventListener('click', () => {
-            context.drawImage(video, 0, 0, 320, 240);
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            canvas.style.display = 'block';
             const dataURL = canvas.toDataURL('image/jpeg');
             
             // ダウンロードリンクの設定
