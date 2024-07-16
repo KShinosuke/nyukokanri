@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>写真撮影と結果表示</title>
+</head>
+<body>
+    <h1>写真を撮影して結果を表示する</h1>
+    <video id="video" width="320" height="240" autoplay></video>
+    <button id="snap">写真を撮る</button>
+    <canvas id="canvas" width="320" height="240"></canvas>
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const snap = document.getElementById('snap');
+
+        // カメラへのアクセスをリクエスト
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((err) => {
+                console.error("エラー:", err);
+            });
+
+        // 写真を撮影してキャンバスに描画
+        snap.addEventListener('click', () => {
+            context.drawImage(video, 0, 0, 320, 240);
+            const dataURL = canvas.toDataURL('image/png');
+            
+            // ここでデータをサーバーに送信
+            fetch('/upload', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ imageData: dataURL })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 結果を表示
+                alert('結果: ' + data.result);
+            })
+            .catch(error => {
+                console.error('エラー:', error);
+            });
+        });
+    </script>
+</body>
+</html>
